@@ -1,12 +1,14 @@
 package pdf
 
 import (
+	"path/filepath"
+
 	"github.com/jung-kurt/gofpdf"
 
 	"github.com/alex-nt/pdf-converter/file"
 )
 
-func Write(name string, imageDetails *[]file.ImageInfo, marginTop, marginLeft float64, aspectRatio bool) {
+func Write(name string, directory string, imageDetails *[]file.ImageInfo, marginTop, marginLeft float64, aspectRatio bool) {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 
 	width, height := pdf.GetPageSize()
@@ -14,17 +16,25 @@ func Write(name string, imageDetails *[]file.ImageInfo, marginTop, marginLeft fl
 		Wd: width, Ht: height}
 
 	for _, image := range *imageDetails {
-		orientation := pageFormat(image)
+		orientation := pageOrientation(image)
 
 		pdf.AddPageFormat(orientation, sizeType)
 
 		addImage(pdf, image, marginTop, marginLeft)
 	}
 
-	err := pdf.OutputFileAndClose(name)
+	outputFileName := generateName(name, directory)
+	err := pdf.OutputFileAndClose(outputFileName)
 	if nil != err {
 		panic(err)
 	}
+}
+
+func generateName(name string, directory string) string {
+	if "" == name {
+		return filepath.Base(directory) + ".pdf"
+	}
+	return name
 }
 
 func addImage(pdf *gofpdf.Fpdf, imageDeails file.ImageInfo, marginTop, marginLeft float64) {
@@ -37,7 +47,7 @@ func addImage(pdf *gofpdf.Fpdf, imageDeails file.ImageInfo, marginTop, marginLef
 		width-2*marginTop, height-2*marginLeft, false, opt, 0, "")
 }
 
-func pageFormat(image file.ImageInfo) string {
+func pageOrientation(image file.ImageInfo) string {
 	orientation := "P"
 	if image.Height < image.Width {
 		orientation = "L"
