@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	"github.com/alex-nt/pdf-converter/file"
@@ -25,5 +26,6 @@ func main() {
 
 	imageOptions := file.Read(*directory)
 
+	fmt.Println(*aspectRatio)
 	pdf.Write(*outputName, *directory, imageOptions, *marginTop, *marginLeft, *aspectRatio)
 }
