@@ -5,15 +5,22 @@ import (
 	"io/ioutil"
 )
 
+// DocumentMargins has all the margins that will be enforced for a document
+type DocumentMargins struct {
+	Top    int `json:"top"`
+	Bottom int `json:"bottom"`
+	Left   int `json:"left"`
+	Right  int `json:"right"`
+}
+
 // OutputProfile is the container for output device characteristics
 type OutputProfile struct {
-	Height int `json:"height"`
-	Width  int `json:"width"`
+	Margins DocumentMargins `json:"margins"`
 }
 
 // Read will convert a jsonFile to an OutputProfile
 func Read(path string) OutputProfile {
-	file, err := ioutil.ReadFile("./config.json")
+	file, err := ioutil.ReadFile(path)
 	if nil != err {
 		panic(err)
 	}
