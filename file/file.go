@@ -8,40 +8,50 @@ import (
 )
 
 // Read extracts all image data needed for layouting from a folder
-func Read(path string) *[]ImageInfo {
+func Read(path string) [][]ImageInfo {
 	fi, err := os.Stat(path)
 	if err != nil {
 		panic(err)
 	}
 
+	imagePerDir := make([][]ImageInfo, 0, 0)
+
 	switch mode := fi.Mode(); {
 	case mode.IsDir():
-		return readDirectory(path)
+		readDirectory(path, &imagePerDir)
 	case mode.IsRegular():
 		panic("Only directories of images supported!")
 	}
-	return nil
+
+	return imagePerDir
 }
 
-func readDirectory(path string) *[]ImageInfo {
-	imageInformation := make([]ImageInfo, 0, 0)
-
+func readDirectory(path string, imagePerDir *[][]ImageInfo) {
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, f := range files {
-		imagePath := filepath.Join(path, f.Name())
-		height, width := size(imagePath)
+	imageInformation := make([]ImageInfo, 0, 0)
 
-		extension := filepath.Ext(f.Name())
-		imageInformation = append(imageInformation, ImageInfo{
-			Height: height,
-			Width:  width,
-			Path:   imagePath,
-			Type:   extension[1:]})
+	for _, f := range files {
+
+		newPath := filepath.Join(path, f.Name())
+		if f.IsDir() {
+			readDirectory(newPath, imagePerDir)
+		} else {
+			height, width := size(newPath)
+
+			extension := filepath.Ext(f.Name())
+			imageInformation = append(imageInformation, ImageInfo{
+				Height: height,
+				Width:  width,
+				Path:   newPath,
+				Type:   extension[1:]})
+		}
 	}
 
-	return &imageInformation
+	if len(imageInformation) > 0 {
+		*imagePerDir = append(*imagePerDir, imageInformation)
+	}
 }

@@ -2,14 +2,15 @@ package pdf
 
 import (
 	"fmt"
-	"path/filepath"
+	"os"
+	"strings"
 
 	"github.com/jung-kurt/gofpdf"
 
 	"github.com/alex-nt/pdf-converter/file"
 )
 
-func Write(name string, directory string, imageDetails *[]file.ImageInfo, marginTop, marginLeft float64, aspectRatio bool) {
+func Write(directory string, imageDetails *[]file.ImageInfo, aspectRatio bool) {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 
 	width, height := pdf.GetPageSize()
@@ -23,10 +24,10 @@ func Write(name string, directory string, imageDetails *[]file.ImageInfo, margin
 
 		pdf.AddPageFormat(orientation, sizeType)
 
-		addImage(pdf, image, marginTop, marginLeft, aspectRatio)
+		addImage(pdf, image, aspectRatio)
 	}
 
-	outputFileName := generateName(name, directory)
+	outputFileName := generateName((*imageDetails)[0].Path, directory)
 	err := pdf.OutputFileAndClose(outputFileName)
 	if nil != err {
 		panic(err)
@@ -34,30 +35,33 @@ func Write(name string, directory string, imageDetails *[]file.ImageInfo, margin
 }
 
 func generateName(name string, directory string) string {
-	if "" == name {
-		return filepath.Base(directory) + ".pdf"
-	}
-	return name
+	parts := strings.Split(name, string(os.PathSeparator))
+
+	return directory + string(os.PathSeparator) + parts[len(parts)-2] + ".pdf"
 }
 
-func addImage(pdf *gofpdf.Fpdf, imageDeails file.ImageInfo, marginTop, marginLeft float64, aspectRatio bool) {
+func addImage(pdf *gofpdf.Fpdf, imageDetails file.ImageInfo, aspectRatio bool) {
 	var opt gofpdf.ImageOptions
-	opt.ImageType = imageDeails.Type
+	opt.ImageType = imageDetails.Type
 
 	width, height := pdf.GetPageSize()
 
+	var marginLeft, marginTop float64
 	if aspectRatio {
-		computedHeight := (float64(imageDeails.Height) / float64(imageDeails.Width)) * (width - 2*marginTop)
+		computedHeight := (float64(imageDetails.Height) / float64(imageDetails.Width)) * width
 		if height < computedHeight {
-			width = (float64(imageDeails.Width) / float64(imageDeails.Height)) * (height - 2*marginTop)
+			computedWidth := (float64(imageDetails.Width) / float64(imageDetails.Height)) * height
+			marginLeft = (width - computedWidth) / 2
+			width = computedWidth
 		} else {
 			height = computedHeight
+			marginTop = (height - computedHeight) / 2
 		}
 	}
 
-	fmt.Printf("Img w: %f h: %f, Output Img: w: %f h: %f \n", imageDeails.Width, imageDeails.Height, width, height)
-	pdf.ImageOptions(imageDeails.Path, marginTop, marginLeft,
-		width-2*marginTop, height-2*marginLeft, false, opt, 0, "")
+	fmt.Printf("Type: %s, Path %s: , Img w: %d h: %d, Output Img: w: %f h: %f \n", imageDetails.Type, imageDetails.Path, imageDetails.Width, imageDetails.Height, width, height)
+	pdf.ImageOptions(imageDetails.Path, marginLeft, marginTop,
+		width, height, false, opt, 0, "")
 }
 
 func pageOrientation(image file.ImageInfo) string {
