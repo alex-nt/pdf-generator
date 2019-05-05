@@ -42,12 +42,17 @@ func readDirectory(path string, imagePerDir *[][]ImageInfo) {
 		} else {
 			height, width := size(newPath)
 
-			extension := filepath.Ext(f.Name())
+			extension := filepath.Ext(f.Name())[1:]
+			if extension == "webp" {
+				newPath = webpToJPG(newPath)
+				extension = filepath.Ext(newPath)[1:]
+			}
+
 			imageInformation = append(imageInformation, ImageInfo{
 				Height: height,
 				Width:  width,
 				Path:   newPath,
-				Type:   extension[1:]})
+				Type:   extension})
 		}
 	}
 
