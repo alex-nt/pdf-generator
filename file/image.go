@@ -8,6 +8,7 @@ import (
 
 	// jpeg decoder
 	"image/jpeg"
+	"image/png"
 	_ "image/png" // png decoder
 
 	"golang.org/x/image/webp" // webp decoder
@@ -25,6 +26,31 @@ func size(path string) (height, width int) {
 		panic(err)
 	}
 	return image.Height, image.Width
+}
+
+func pngToJPG(path string) string {
+	file, err := os.Open(path)
+	if nil != err {
+		panic(err)
+	}
+
+	pngImg, err := png.Decode(file)
+	if nil != err {
+		panic(err)
+	}
+
+	currentExtension := filepath.Ext(path)
+	newFilePath := path[0:len(path)-len(currentExtension)] + ".jpg"
+
+	newFile, err := os.Create(newFilePath)
+	err = jpeg.Encode(newFile, pngImg, nil)
+	if nil != err {
+		panic(err)
+	}
+
+	fmt.Println("JJJJPPPPGGGG" + newFilePath)
+
+	return newFilePath
 }
 
 func webpToJPG(path string) string {
