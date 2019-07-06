@@ -34,6 +34,8 @@ func main() {
 	pdfStructures := file.Read(*directory)
 
 	for _, pdfStructure := range pdfStructures {
-		pdfwriter.Write(pdfStructure, pdfOptions)
+		if err := pdfwriter.Write(pdfStructure, pdfOptions); nil != err {
+			panic(err)
+		}
 	}
 }
