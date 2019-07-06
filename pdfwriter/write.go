@@ -1,7 +1,9 @@
 package pdfwriter
 
 import (
+	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	gofpdf "github.com/jung-kurt/gofpdf/v2"
@@ -21,6 +23,8 @@ type Options struct {
 func Write(pdfStructure collector.PdfStructure, options Options) error {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 
+	sectionMap := addTOC(pdf, pdfStructure.TableOfContents)
+
 	width, height := pdf.GetPageSize()
 	sizeType := gofpdf.SizeType{Wd: width, Ht: height}
 
@@ -31,13 +35,60 @@ func Write(pdfStructure collector.PdfStructure, options Options) error {
 				defer deleteImage(image)
 			}
 		}
+
 		pdf.AddPageFormat(orientation, sizeType)
-		addImage(pdf, image, options)
+		addImage(pdf, image, sectionMap, options)
 	}
 
 	outputFilePath := generateOutputFilePath(pdfStructure.Images[0].Path, options)
 	logger.Info.Println("\tOutput pdf path\t", outputFilePath)
 	return pdf.OutputFileAndClose(outputFilePath)
+}
+
+type section struct {
+	nr     int
+	name   string
+	linkID int
+}
+
+func addTOC(pdf *gofpdf.Fpdf, toc *collector.TOC) map[string]*section {
+	sectionMap := make(map[string]*section, 0)
+
+	if nil != toc {
+		pdf.AddPage()
+
+		pdf.SetFont("Arial", "B", 16)
+		pdf.Cell(40, 20, toc.Title)
+		pdf.Ln(20)
+
+		pdf.SetFont("Arial", "", 12)
+		for idx, entry := range toc.Entries {
+			generatedLinkID := pdf.AddLink()
+			sectionMap[entry.File] = &section{
+				name:   entry.Name,
+				nr:     idx,
+				linkID: generatedLinkID}
+
+			pdf.WriteLinkID(10, generateTOCLine(pdf, entry.Name, idx), generatedLinkID)
+			pdf.Ln(10)
+		}
+	}
+
+	return sectionMap
+}
+
+func generateTOCLine(pdf *gofpdf.Fpdf, name string, idx int) string {
+	contentLength := pdf.GetStringWidth(name) + pdf.GetStringWidth(strconv.Itoa(idx))
+
+	width, _ := pdf.GetPageSize()
+	left, _, right, _ := pdf.GetMargins()
+
+	lineWidth := width - contentLength - left - right
+	separatorLen := pdf.GetStringWidth(".")
+
+	nrOfDots := int(lineWidth/separatorLen) - 10
+
+	return fmt.Sprintf("%s%s{%d}", name, strings.Repeat(".", nrOfDots), idx)
 }
 
 func deleteImage(image collector.PdfImage) {
@@ -65,7 +116,12 @@ type imageLayout struct {
 	MarginLeft float64
 }
 
-func addImage(pdf *gofpdf.Fpdf, image collector.PdfImage, options Options) {
+func addImage(pdf *gofpdf.Fpdf, image collector.PdfImage, sections map[string]*section, options Options) {
+	section := sections[image.Name]
+	if nil != section {
+		pdf.RegisterAlias(fmt.Sprintf("{%d}", section.nr), fmt.Sprintf("%d", pdf.PageNo()))
+		pdf.SetLink(section.linkID, -1, pdf.PageNo())
+	}
 	var opt gofpdf.ImageOptions
 	opt.ImageType = image.Type
 

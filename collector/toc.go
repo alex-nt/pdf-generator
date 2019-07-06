@@ -9,24 +9,17 @@ import (
 // TOC is the Table of Contents
 // Contains image name indexes
 type TOC struct {
-	Title    string       `json:"title"`
-	Chapters []TOCChapter `json:"chapters"`
+	Title   string       `json:"title"`
+	Entries []TOCChapter `json:"entries"`
 }
 
 // TOCChapter is a chapter in the TOC
 type TOCChapter struct {
-	ChapterName string            `json:"chapterName"`
-	Entries     map[string]string `json:"entries"`
+	Name string `json:"name"`
+	File string `json:"file"`
 }
 
-// PdfStructure is the collection of data needed to generate a pdf
-type PdfStructure struct {
-	TableOfContents *TOC
-	Images          []PdfImage
-}
-
-// ReadTOC will read a TOC from a json file
-func ReadTOC(path string) (*TOC, error) {
+func readTOC(path string) (*TOC, error) {
 	jsonFile, err := os.Open(path)
 	if nil != err {
 		return nil, err
