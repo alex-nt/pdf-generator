@@ -1,4 +1,11 @@
-package file
+package collector
+
+import (
+	"image"
+	"os"
+
+	"github.com/alex-nt/pdf-converter/logger"
+)
 
 // PdfImage contains the information needed to add an image to a pdf file
 type PdfImage struct {
@@ -24,4 +31,19 @@ func (pdfImage *PdfImage) EncodeJPG() bool {
 	}
 
 	return false
+}
+
+func size(path string) (height, width int) {
+	logger.Debug.Println(path)
+	file, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+
+	image, _, err := image.DecodeConfig(file)
+	if err != nil {
+		logger.Debug.Println(path)
+		panic(err)
+	}
+	return image.Height, image.Width
 }

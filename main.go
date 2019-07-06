@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/alex-nt/pdf-converter/file"
+	"github.com/alex-nt/pdf-converter/collector"
 	"github.com/alex-nt/pdf-converter/logger"
 	"github.com/alex-nt/pdf-converter/pdfwriter"
 )
@@ -31,7 +31,7 @@ func main() {
 	}
 
 	pdfOptions := pdfwriter.Options{Directory: outDirectory, AspectRatio: *aspectRatio, JPGOnly: *jpgOnly}
-	pdfStructures := file.Read(*directory)
+	pdfStructures := collector.Read(*directory)
 
 	for _, pdfStructure := range pdfStructures {
 		if err := pdfwriter.Write(pdfStructure, pdfOptions); nil != err {

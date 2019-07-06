@@ -6,7 +6,7 @@ import (
 
 	gofpdf "github.com/jung-kurt/gofpdf/v2"
 
-	"github.com/alex-nt/pdf-converter/file"
+	"github.com/alex-nt/pdf-converter/collector"
 	"github.com/alex-nt/pdf-converter/logger"
 )
 
@@ -18,7 +18,7 @@ type Options struct {
 }
 
 // Write will generate and write on disk a pdf
-func Write(pdfStructure file.PdfStructure, options Options) error {
+func Write(pdfStructure collector.PdfStructure, options Options) error {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 
 	width, height := pdf.GetPageSize()
@@ -40,7 +40,7 @@ func Write(pdfStructure file.PdfStructure, options Options) error {
 	return pdf.OutputFileAndClose(outputFilePath)
 }
 
-func deleteImage(image file.PdfImage) {
+func deleteImage(image collector.PdfImage) {
 	if err := os.Remove(image.Path); nil != err {
 		panic(err)
 	}
@@ -65,7 +65,7 @@ type imageLayout struct {
 	MarginLeft float64
 }
 
-func addImage(pdf *gofpdf.Fpdf, image file.PdfImage, options Options) {
+func addImage(pdf *gofpdf.Fpdf, image collector.PdfImage, options Options) {
 	var opt gofpdf.ImageOptions
 	opt.ImageType = image.Type
 
@@ -78,7 +78,7 @@ func addImage(pdf *gofpdf.Fpdf, image file.PdfImage, options Options) {
 		imageLayout.Width, imageLayout.Height, false, opt, 0, "")
 }
 
-func computeImageSize(image file.PdfImage, width float64, height float64, options Options) imageLayout {
+func computeImageSize(image collector.PdfImage, width float64, height float64, options Options) imageLayout {
 	var marginLeft, marginTop float64
 
 	if options.AspectRatio {
@@ -99,7 +99,7 @@ func computeImageSize(image file.PdfImage, width float64, height float64, option
 		MarginLeft: marginLeft}
 }
 
-func pageOrientation(image file.PdfImage) string {
+func pageOrientation(image collector.PdfImage) string {
 	orientation := "P"
 	if image.Height < image.Width {
 		orientation = "L"

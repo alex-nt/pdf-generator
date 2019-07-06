@@ -1,7 +1,6 @@
-package file
+package collector
 
 import (
-	"image"
 	"os"
 	"path/filepath"
 
@@ -9,24 +8,7 @@ import (
 	"image/png"
 
 	"golang.org/x/image/webp" // webp decoder
-
-	"github.com/alex-nt/pdf-converter/logger"
 )
-
-func size(path string) (height, width int) {
-	logger.Debug.Println(path)
-	file, err := os.Open(path)
-	if err != nil {
-		panic(err)
-	}
-
-	image, _, err := image.DecodeConfig(file)
-	if err != nil {
-		logger.Debug.Println(path)
-		panic(err)
-	}
-	return image.Height, image.Width
-}
 
 func pngToJPG(path string) string {
 	file, err := os.Open(path)
