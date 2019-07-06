@@ -39,6 +39,7 @@ func size(path string) (height, width int) {
 	if err != nil {
 		panic(err)
 	}
+	defer file.Close()
 
 	image, _, err := image.DecodeConfig(file)
 	if err != nil {

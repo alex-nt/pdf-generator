@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"os"
+	"sync"
 
 	"github.com/alex-nt/pdf-generator/collector"
 	"github.com/alex-nt/pdf-generator/logger"
@@ -30,12 +31,19 @@ func main() {
 		outDirectory = *outputDirectory
 	}
 
+	var wg sync.WaitGroup
 	pdfOptions := pdfwriter.Options{Directory: outDirectory, AspectRatio: *aspectRatio, JPGOnly: *jpgOnly}
 	pdfStructures := collector.Gather(*directory)
 
 	for _, pdfStructure := range pdfStructures {
-		if err := pdfwriter.Write(pdfStructure, pdfOptions); nil != err {
-			panic(err)
-		}
+		wg.Add(1)
+		go func(pdfStructure collector.PdfStructure, pdfOptions pdfwriter.Options) {
+			if err := pdfwriter.Write(pdfStructure, pdfOptions); nil != err {
+				panic(err)
+			}
+			wg.Done()
+		}(pdfStructure, pdfOptions)
 	}
+
+	wg.Wait()
 }

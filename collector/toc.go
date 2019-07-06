@@ -24,7 +24,6 @@ func readTOC(path string) (*TOC, error) {
 	if nil != err {
 		return nil, err
 	}
-
 	defer jsonFile.Close()
 
 	byteValue, err := ioutil.ReadAll(jsonFile)

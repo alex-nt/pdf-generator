@@ -15,6 +15,7 @@ func pngToJPG(path string) string {
 	if nil != err {
 		panic(err)
 	}
+	defer file.Close()
 
 	pngImg, err := png.Decode(file)
 	if nil != err {
@@ -29,6 +30,7 @@ func pngToJPG(path string) string {
 	if nil != err {
 		panic(err)
 	}
+	defer newFile.Close()
 
 	return newFilePath
 }
@@ -38,6 +40,7 @@ func webpToJPG(path string) string {
 	if nil != err {
 		panic(err)
 	}
+	defer file.Close()
 
 	webpImg, err := webp.Decode(file)
 	if nil != err {
@@ -52,6 +55,7 @@ func webpToJPG(path string) string {
 	if nil != err {
 		panic(err)
 	}
+	defer newFile.Close()
 
 	return newFilePath
 }
