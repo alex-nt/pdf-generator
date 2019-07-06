@@ -31,7 +31,7 @@ func main() {
 	}
 
 	pdfOptions := pdfwriter.Options{Directory: outDirectory, AspectRatio: *aspectRatio, JPGOnly: *jpgOnly}
-	pdfStructures := collector.Read(*directory)
+	pdfStructures := collector.Gather(*directory)
 
 	for _, pdfStructure := range pdfStructures {
 		if err := pdfwriter.Write(pdfStructure, pdfOptions); nil != err {

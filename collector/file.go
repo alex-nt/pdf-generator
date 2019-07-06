@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 )
 
-// Read extracts all image data needed for layouting from a folder
-func Read(path string) []PdfStructure {
+// Gather collects all image data needed for layouting from a folder
+func Gather(path string) []PdfStructure {
 	fi, err := os.Stat(path)
 	if err != nil {
 		panic(err)
