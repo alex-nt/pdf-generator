@@ -4,7 +4,7 @@ import (
 	"image"
 	"os"
 
-	"github.com/alex-nt/pdf-converter/logger"
+	"github.com/alex-nt/pdf-generator/logger"
 )
 
 // PdfImage contains the information needed to add an image to a pdf file

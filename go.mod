@@ -1,4 +1,4 @@
-module github.com/alex-nt/pdf-converter
+module github.com/alex-nt/pdf-generator
 
 require (
 	github.com/jung-kurt/gofpdf/v2 v2.8.2

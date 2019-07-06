@@ -1,2 +1,2 @@
-# pdf-converter
+# pdf-generator
 pdf

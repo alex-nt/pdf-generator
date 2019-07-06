@@ -4,9 +4,9 @@ import (
 	"flag"
 	"os"
 
-	"github.com/alex-nt/pdf-converter/collector"
-	"github.com/alex-nt/pdf-converter/logger"
-	"github.com/alex-nt/pdf-converter/pdfwriter"
+	"github.com/alex-nt/pdf-generator/collector"
+	"github.com/alex-nt/pdf-generator/logger"
+	"github.com/alex-nt/pdf-generator/pdfwriter"
 )
 
 func main() {
