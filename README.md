@@ -3,12 +3,6 @@
 This tool has the single purpose of generating a pdf from a folder of images.
 Image formats supported are: webp, jpg, png
 
-Install via go get:
-
-```
-go get -u github.com/alex-nt/pdf-generator
-```
-
 Command line params:
 
 | Param | Mandatory| Description |
