@@ -56,7 +56,7 @@ func addImage(pdf *gofpdf.Fpdf, imageDetails file.ImageInfo, aspectRatio bool) {
 		}
 	}
 
-	logger.Debug.Print("Type: %s, Path %s: , Img w: %d h: %d, Output Img: w: %f h: %f \n", imageDetails.Type, imageDetails.Path, imageDetails.Width, imageDetails.Height, width, height)
+	logger.Debug.Printf("Type: %s, Path: %s, Img w: %d h: %d, Output Img w: %f h: %f \n", imageDetails.Type, imageDetails.Path, imageDetails.Width, imageDetails.Height, width, height)
 	pdf.ImageOptions(imageDetails.Path, marginLeft, marginTop,
 		width, height, false, opt, 0, "")
 }
