@@ -5,7 +5,9 @@ Image formats supported are: webp, jpg, png
 
 Install via go get:
 
-> go get -u github.com/alex-nt/pdf-generator
+```
+go get -u github.com/alex-nt/pdf-generator
+```
 
 Command line params:
 
