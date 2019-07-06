@@ -12,8 +12,9 @@ import (
 func main() {
 
 	directory := flag.String("directory", "", "Directory of images sorted by name. (Required)")
+	outputDirectory := flag.String("outputDirectory", "", "Output directory for pdfs.")
 	aspectRatio := flag.Bool("aspectRatio", true, "Preserve image aspect ratio.")
-	//jpgOnly := flag.Bool("jpg-only", true, "Convert all images to jpg.")
+	jpgOnly := flag.Bool("jpgOnly", true, "Convert all images to jpg.")
 	verbose := flag.Bool("v", false, "Verbose mode.")
 
 	flag.Parse()
@@ -25,9 +26,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	imageOptions := file.Read(*directory)
+	outDirectory := *directory
+	if "" != *outputDirectory {
+		outDirectory = *outputDirectory
+	}
 
-	for _, value := range imageOptions {
-		pdf.Write(*directory, &value, *aspectRatio)
+	fileOptions := file.Options{JPGOnly: *jpgOnly}
+	pdfOptions := pdf.Options{Directory: outDirectory, AspectRatio: *aspectRatio}
+	pdfStructures := file.Read(*directory, fileOptions)
+
+	for _, pdfStructure := range pdfStructures {
+		pdf.Write(pdfStructure, pdfOptions)
 	}
 }
