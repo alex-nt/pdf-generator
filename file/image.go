@@ -1,7 +1,6 @@
 package file
 
 import (
-	"fmt"
 	"image"
 	"os"
 	"path/filepath"
@@ -12,10 +11,12 @@ import (
 	_ "image/png" // png decoder
 
 	"golang.org/x/image/webp" // webp decoder
+
+	"github.com/alex-nt/pdf-converter/logger"
 )
 
 func size(path string) (height, width int) {
-	fmt.Println(path)
+	logger.Debug.Println(path)
 	file, err := os.Open(path)
 	if err != nil {
 		panic(err)
@@ -47,8 +48,6 @@ func pngToJPG(path string) string {
 	if nil != err {
 		panic(err)
 	}
-
-	fmt.Println("JJJJPPPPGGGG" + newFilePath)
 
 	return newFilePath
 }
