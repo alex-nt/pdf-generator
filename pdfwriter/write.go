@@ -1,4 +1,4 @@
-package pdf
+package pdfwriter
 
 import (
 	"os"
@@ -14,10 +14,11 @@ import (
 type Options struct {
 	Directory   string
 	AspectRatio bool
+	JPGOnly     bool
 }
 
 // Write will generate and write on disk a pdf
-func Write(pdfStructure file.PdfStructure, options Options) {
+func Write(pdfStructure file.PdfStructure, options Options) error {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 
 	width, height := pdf.GetPageSize()
@@ -25,36 +26,35 @@ func Write(pdfStructure file.PdfStructure, options Options) {
 
 	for _, image := range pdfStructure.Images {
 		orientation := pageOrientation(image)
+		if options.JPGOnly {
+			if image.EncodeJPG() {
+				defer deleteImage(image)
+			}
+		}
 		pdf.AddPageFormat(orientation, sizeType)
 		addImage(pdf, image, options)
 	}
-	defer cleanup(pdfStructure.Images)
 
-	outputFileName := generateOutputFileName(pdfStructure.Images[0].Path, options)
-	logger.Info.Println(outputFileName)
-	if err := pdf.OutputFileAndClose(outputFileName); nil != err {
+	outputFilePath := generateOutputFilePath(pdfStructure.Images[0].Path, options)
+	logger.Info.Println("\tOutput pdf path\t", outputFilePath)
+	return pdf.OutputFileAndClose(outputFilePath)
+}
+
+func deleteImage(image file.PdfImage) {
+	if err := os.Remove(image.Path); nil != err {
 		panic(err)
 	}
 }
 
-func cleanup(images []file.PdfImage) {
-	for _, image := range images {
-		if image.DeleteAfterUser {
-			if err := os.Remove(image.Path); nil != err {
-				panic(err)
-			}
-		}
-	}
-}
-
-func generateOutputFileName(name string, options Options) string {
+func generateOutputFilePath(name string, options Options) string {
 	parts := strings.Split(name, string(os.PathSeparator))
 	logger.Info.Println(options.Directory)
 
-	pdfPath := options.Directory + string(os.PathSeparator) + parts[len(parts)-2] + ".pdf"
 	if err := os.MkdirAll(options.Directory, os.ModePerm); nil != err {
 		panic(err)
 	}
+
+	pdfPath := options.Directory + string(os.PathSeparator) + parts[len(parts)-2] + ".pdf"
 	return pdfPath
 }
 

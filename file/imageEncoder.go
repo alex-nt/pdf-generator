@@ -22,6 +22,7 @@ func size(path string) (height, width int) {
 
 	image, _, err := image.DecodeConfig(file)
 	if err != nil {
+		logger.Debug.Println(path)
 		panic(err)
 	}
 	return image.Height, image.Width
