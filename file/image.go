@@ -5,10 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	// jpeg decoder
-	"image/jpeg"
+	"image/jpeg" // jpeg decoder
 	"image/png"
-	_ "image/png" // png decoder
 
 	"golang.org/x/image/webp" // webp decoder
 
