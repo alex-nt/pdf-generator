@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	gofpdf "github.com/jung-kurt/gofpdf/v2"
+	"github.com/jung-kurt/gofpdf/v2"
 
 	"github.com/alex-nt/pdf-generator/collector"
 	"github.com/alex-nt/pdf-generator/logger"
