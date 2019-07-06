@@ -16,7 +16,7 @@ type PdfImage struct {
 	Type   string
 }
 
-// EncodeJPG image to jpg
+// EncodeJPG encodes image to jpg
 func (pdfImage *PdfImage) EncodeJPG() bool {
 	if pdfImage.Type == "webp" {
 		pdfImage.Type = "jpg"
