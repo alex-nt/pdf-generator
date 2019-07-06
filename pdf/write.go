@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jung-kurt/gofpdf"
+	"github.com/jung-kurt/gofpdf/v2"
 
 	"github.com/alex-nt/pdf-converter/file"
 )
