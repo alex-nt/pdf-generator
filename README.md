@@ -17,7 +17,7 @@ Command line params:
 | jpgOnly |   | Convert all images to JPG before adding them to the pdf (this was needed because there was a weird bug on Sony DPT-RP1 with png images) |
 | v |   | Verbose mode |
 
-The tool also supports table of contents. If in a folder of images a *toc.json* is found it will generate a pdf according to it. 
+The tool also supports table of contents. If in a folder of images a **toc.json** is found it will generate a pdf according to it. 
 
 ```json
 {
@@ -36,3 +36,9 @@ The tool also supports table of contents. If in a folder of images a *toc.json* 
 *file* is the file name where the link will be created
 
 *name* is the name that will be displayed in the table of contents page
+
+# FAQ
+
+### Should I use this?
+
+Probably no. This was made for a very specific use case and with a particular formatting in mind. The only feature that might be added is an automatic grayscale conversion. 
