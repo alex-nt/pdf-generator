@@ -18,7 +18,8 @@ type PdfStructure struct {
 var supportedImageTypes = map[string]bool{
 	"jpg":  true,
 	"png":  true,
-	"webp": true}
+	"webp": true,
+	"gif":  true}
 
 // Gather collects all image data needed for layouting from a folder
 func Gather(path string) []PdfStructure {
