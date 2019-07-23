@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"log"
 	"os"
 	"sync"
 
@@ -11,7 +12,7 @@ import (
 )
 
 func main() {
-	directory := flag.String("directory", "", "Directory of images sorted by name. (Required)")
+	directory := flag.String("directory", "", "Directory of images sorted by name.")
 	outputDirectory := flag.String("outputDirectory", "", "Output directory for pdfs.")
 	aspectRatio := flag.Bool("aspectRatio", true, "Preserve image aspect ratio.")
 	jpgOnly := flag.Bool("jpgOnly", true, "Convert all images to jpg.")
@@ -21,20 +22,24 @@ func main() {
 
 	logger.Init(*verbose)
 
-	if "" == *directory {
-		flag.PrintDefaults()
-		os.Exit(1)
+	var err error
+	workingDirectory := *directory
+	if "" == workingDirectory {
+		workingDirectory, err = os.Getwd()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	outDirectory := *directory
+	outDirectory := workingDirectory
 	if "" != *outputDirectory {
 		outDirectory = *outputDirectory
 	}
 
-	var wg sync.WaitGroup
 	pdfOptions := pdfwriter.Options{Directory: outDirectory, AspectRatio: *aspectRatio, JPGOnly: *jpgOnly}
-	pdfStructures := collector.Gather(*directory)
+	pdfStructures := collector.Gather(workingDirectory)
 
+	var wg sync.WaitGroup
 	for _, pdfStructure := range pdfStructures {
 		wg.Add(1)
 		go func(pdfStructure collector.PdfStructure, pdfOptions pdfwriter.Options) {
@@ -44,6 +49,5 @@ func main() {
 			wg.Done()
 		}(pdfStructure, pdfOptions)
 	}
-
 	wg.Wait()
 }
