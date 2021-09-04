@@ -5,11 +5,13 @@ import (
 	"path/filepath"
 
 	"image/gif"
-	"image/jpeg" // jpeg decoder
+	"image/jpeg"
 	"image/png"
 
-	"golang.org/x/image/webp" // webp decoder
+	"golang.org/x/image/webp"
 )
+
+var quality = jpeg.Options{Quality: 100}
 
 func pngToJPG(path string) string {
 	file, err := os.Open(path)
@@ -27,7 +29,7 @@ func pngToJPG(path string) string {
 	newFilePath := path[0:len(path)-len(currentExtension)] + ".jpg"
 
 	newFile, err := os.Create(newFilePath)
-	err = jpeg.Encode(newFile, pngImg, nil)
+	err = jpeg.Encode(newFile, pngImg, &quality)
 	if nil != err {
 		panic(err)
 	}
@@ -52,7 +54,7 @@ func gifToJPG(path string) string {
 	newFilePath := path[0:len(path)-len(currentExtension)] + ".jpg"
 
 	newFile, err := os.Create(newFilePath)
-	err = jpeg.Encode(newFile, pngImg, nil)
+	err = jpeg.Encode(newFile, pngImg, &quality)
 	if nil != err {
 		panic(err)
 	}
@@ -77,7 +79,7 @@ func webpToJPG(path string) string {
 	newFilePath := path[0:len(path)-len(currentExtension)] + ".jpg"
 
 	newFile, err := os.Create(newFilePath)
-	err = jpeg.Encode(newFile, webpImg, nil)
+	err = jpeg.Encode(newFile, webpImg, &quality)
 	if nil != err {
 		panic(err)
 	}

@@ -28,7 +28,7 @@ func Gather(path string) []PdfStructure {
 		panic(err)
 	}
 
-	pdfStructures := make([]PdfStructure, 0, 0)
+	pdfStructures := make([]PdfStructure, 0)
 
 	switch mode := fi.Mode(); {
 	case mode.IsDir():
@@ -46,7 +46,7 @@ func readDirectory(path string, pdfStructures *[]PdfStructure) {
 		log.Fatal(err)
 	}
 
-	pdfImages := make([]PdfImage, 0, 0)
+	pdfImages := make([]PdfImage, 0)
 
 	var tableOfContents *TOC
 	for _, f := range files {
@@ -67,7 +67,7 @@ func readDirectory(path string, pdfStructures *[]PdfStructure) {
 					Width:  width,
 					Path:   newPath,
 					Type:   ext})
-			} else if "toc.json" == fileName {
+			} else if fileName == "toc.json" {
 				tableOfContents, err = readTOC(newPath)
 				if nil != err {
 					panic(err)

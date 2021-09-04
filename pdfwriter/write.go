@@ -14,9 +14,10 @@ import (
 
 // Options contains the settings for pdf generation
 type Options struct {
-	Directory   string
-	AspectRatio bool
-	JPGOnly     bool
+	Directory       string
+	JPGOnly         bool
+	MarginTopBottom int
+	MarginLeftRight int
 }
 
 // Write will generate and write on disk a pdf
@@ -134,25 +135,26 @@ func addImage(pdf *gofpdf.Fpdf, image collector.PdfImage, sections map[string]*s
 		imageLayout.Width, imageLayout.Height, false, opt, 0, "")
 }
 
-func computeImageSize(image collector.PdfImage, width float64, height float64, options Options) imageLayout {
+func computeImageSize(image collector.PdfImage, pageWidth float64, pageHeight float64, options Options) imageLayout {
 	var marginLeft, marginTop float64
 
-	if options.AspectRatio {
-		computedHeight := (float64(image.Height) / float64(image.Width)) * width
-		if height < computedHeight {
-			computedWidth := (float64(image.Width) / float64(image.Height)) * height
-			marginLeft = (width - computedWidth) / 2
-			width = computedWidth
-		} else {
-			height = computedHeight
-			marginTop = (height - computedHeight) / 2
-		}
+	effectivePageHeight := pageHeight - float64(2*options.MarginTopBottom)
+	effectivePageWidth := pageWidth - float64(2*options.MarginLeftRight)
+
+	computedHeight := (float64(image.Height) / float64(image.Width)) * effectivePageWidth
+	if effectivePageHeight < computedHeight {
+		computedWidth := (float64(image.Width) / float64(image.Height)) * effectivePageHeight
+		marginLeft = (effectivePageWidth - computedWidth) / 2
+		effectivePageWidth = computedWidth
+	} else {
+		effectivePageHeight = computedHeight
+		marginTop = (effectivePageHeight - computedHeight) / 2
 	}
 
-	return imageLayout{Height: height,
-		Width:      width,
-		MarginTop:  marginTop,
-		MarginLeft: marginLeft}
+	return imageLayout{Height: effectivePageHeight,
+		Width:      effectivePageWidth,
+		MarginTop:  marginTop + float64(options.MarginTopBottom),
+		MarginLeft: marginLeft + float64(options.MarginLeftRight)}
 }
 
 func pageOrientation(image collector.PdfImage) string {
