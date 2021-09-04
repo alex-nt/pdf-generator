@@ -14,7 +14,6 @@ import (
 func main() {
 	directory := flag.String("directory", "", "Directory of images sorted by name.")
 	outputDirectory := flag.String("outputDirectory", "", "Output directory for pdfs.")
-	jpgOnly := flag.Bool("jpgOnly", true, "Convert all images to jpg.")
 	verbose := flag.Bool("v", false, "Verbose mode.")
 	marginTopBottom := flag.Int("marginTopBottom", 5, "Top and bottom minimum margin size (can be larger after aspect ratio adjustments)")
 	marginLeftRight := flag.Int("marginLeftRight", 5, "Left and right minimum margin size (can be larger after aspect ratio adjustments)")
@@ -40,8 +39,7 @@ func main() {
 	pdfOptions := pdfwriter.Options{
 		Directory:       outDirectory,
 		MarginTopBottom: *marginTopBottom,
-		MarginLeftRight: *marginLeftRight,
-		JPGOnly:         *jpgOnly}
+		MarginLeftRight: *marginLeftRight}
 	pdfStructures := collector.Gather(workingDirectory)
 
 	var wg sync.WaitGroup

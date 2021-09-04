@@ -15,7 +15,6 @@ import (
 // Options contains the settings for pdf generation
 type Options struct {
 	Directory       string
-	JPGOnly         bool
 	MarginTopBottom int
 	MarginLeftRight int
 }
@@ -31,11 +30,6 @@ func Write(pdfStructure collector.PdfStructure, options Options) error {
 
 	for _, image := range pdfStructure.Images {
 		orientation := pageOrientation(image)
-		if options.JPGOnly {
-			if image.EncodeJPG() {
-				defer deleteImage(image)
-			}
-		}
 
 		pdf.AddPageFormat(orientation, sizeType)
 		addImage(pdf, image, sectionMap, options)
@@ -92,12 +86,6 @@ func generateTOCLine(pdf *gofpdf.Fpdf, name string, idx int) string {
 	return fmt.Sprintf("%s%s{%d}", name, strings.Repeat(".", nrOfDots), idx)
 }
 
-func deleteImage(image collector.PdfImage) {
-	if err := os.Remove(image.Path); nil != err {
-		panic(err)
-	}
-}
-
 func generateOutputFilePath(name string, options Options) string {
 	parts := strings.Split(name, string(os.PathSeparator))
 	logger.Info.Println(options.Directory)
@@ -131,7 +119,9 @@ func addImage(pdf *gofpdf.Fpdf, image collector.PdfImage, sections map[string]*s
 	imageLayout := computeImageSize(image, width, height, options)
 
 	logger.Debug.Printf("Image %v", image)
-	pdf.ImageOptions(image.Path, imageLayout.MarginLeft, imageLayout.MarginTop,
+	// All images will be written as JPG due to weird DPT-RP1 behaviour
+	pdf.RegisterImageOptionsReader(image.Name, gofpdf.ImageOptions{ImageType: "jpg"}, image.Reader())
+	pdf.ImageOptions(image.Name, imageLayout.MarginLeft, imageLayout.MarginTop,
 		imageLayout.Width, imageLayout.Height, false, opt, 0, "")
 }
 

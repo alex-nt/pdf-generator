@@ -1,7 +1,9 @@
 package collector
 
 import (
+	"bufio"
 	"image"
+	"io"
 	"os"
 
 	"github.com/alex-nt/pdf-generator/logger"
@@ -16,26 +18,25 @@ type PdfImage struct {
 	Type   string
 }
 
-// EncodeJPG encodes image to jpg
-func (pdfImage *PdfImage) EncodeJPG() bool {
-	if pdfImage.Type == "webp" {
-		pdfImage.Path = webpToJPG(pdfImage.Path)
-		pdfImage.Type = "jpg"
-		return true
+func (pdfImage *PdfImage) Reader() io.Reader {
+	if pdfImage.Type == "jpg" {
+		file, err := os.Open(pdfImage.Path)
+		if err != nil {
+			panic(err)
+		}
+		return file
+	} else if pdfImage.Type == "png" {
+		buffer := pngToJPG(pdfImage.Path)
+		return bufio.NewReader(&buffer)
+	} else if pdfImage.Type == "gif" {
+		buffer := gifToJPG(pdfImage.Path)
+		return bufio.NewReader(&buffer)
+	} else if pdfImage.Type == "webp" {
+		buffer := webpToJPG(pdfImage.Path)
+		return bufio.NewReader(&buffer)
+	} else {
+		panic("Type " + pdfImage.Type + " not supported!")
 	}
-
-	if pdfImage.Type == "png" {
-		pdfImage.Path = pngToJPG(pdfImage.Path)
-		pdfImage.Type = "jpg"
-		return true
-	}
-
-	if pdfImage.Type == "gif" {
-		pdfImage.Path = gifToJPG(pdfImage.Path)
-		pdfImage.Type = "jpg"
-	}
-
-	return false
 }
 
 func size(path string) (height, width int) {

@@ -1,8 +1,9 @@
 package collector
 
 import (
+	"bufio"
+	"bytes"
 	"os"
-	"path/filepath"
 
 	"image/gif"
 	"image/jpeg"
@@ -13,7 +14,7 @@ import (
 
 var quality = jpeg.Options{Quality: 100}
 
-func pngToJPG(path string) string {
+func pngToJPG(path string) bytes.Buffer {
 	file, err := os.Open(path)
 	if nil != err {
 		panic(err)
@@ -25,45 +26,37 @@ func pngToJPG(path string) string {
 		panic(err)
 	}
 
-	currentExtension := filepath.Ext(path)
-	newFilePath := path[0:len(path)-len(currentExtension)] + ".jpg"
-
-	newFile, err := os.Create(newFilePath)
-	err = jpeg.Encode(newFile, pngImg, &quality)
+	var buffer bytes.Buffer
+	err = jpeg.Encode(bufio.NewWriter(&buffer), pngImg, &quality)
 	if nil != err {
 		panic(err)
 	}
-	defer newFile.Close()
 
-	return newFilePath
+	return buffer
 }
 
-func gifToJPG(path string) string {
+func gifToJPG(path string) bytes.Buffer {
 	file, err := os.Open(path)
 	if nil != err {
 		panic(err)
 	}
 	defer file.Close()
 
-	pngImg, err := gif.Decode(file)
+	gifImg, err := gif.Decode(file)
 	if nil != err {
 		panic(err)
 	}
 
-	currentExtension := filepath.Ext(path)
-	newFilePath := path[0:len(path)-len(currentExtension)] + ".jpg"
-
-	newFile, err := os.Create(newFilePath)
-	err = jpeg.Encode(newFile, pngImg, &quality)
+	var buffer bytes.Buffer
+	err = jpeg.Encode(bufio.NewWriter(&buffer), gifImg, &quality)
 	if nil != err {
 		panic(err)
 	}
-	defer newFile.Close()
 
-	return newFilePath
+	return buffer
 }
 
-func webpToJPG(path string) string {
+func webpToJPG(path string) bytes.Buffer {
 	file, err := os.Open(path)
 	if nil != err {
 		panic(err)
@@ -75,15 +68,11 @@ func webpToJPG(path string) string {
 		panic(err)
 	}
 
-	currentExtension := filepath.Ext(path)
-	newFilePath := path[0:len(path)-len(currentExtension)] + ".jpg"
-
-	newFile, err := os.Create(newFilePath)
-	err = jpeg.Encode(newFile, webpImg, &quality)
+	var buffer bytes.Buffer
+	err = jpeg.Encode(bufio.NewWriter(&buffer), webpImg, &quality)
 	if nil != err {
 		panic(err)
 	}
-	defer newFile.Close()
 
-	return newFilePath
+	return buffer
 }
