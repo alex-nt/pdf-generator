@@ -52,7 +52,7 @@ type section struct {
 }
 
 func addTOC(pdf *gofpdf.Fpdf, toc *collector.TOC) map[string]*section {
-	sectionMap := make(map[string]*section, 0)
+	sectionMap := make(map[string]*section)
 
 	if nil != toc {
 		pdf.AddPage()
