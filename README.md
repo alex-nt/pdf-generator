@@ -38,4 +38,4 @@ The tool also supports table of contents. If in a folder of images a **toc.json*
 
 ### Should I use this?
 
-Probably no. This was made for a very specific use case and with a particular formatting in mind. The only feature that might be added is an automatic grayscale conversion. 
+Probably no. This was made for a very specific use case and with a particular formatting in mind.
