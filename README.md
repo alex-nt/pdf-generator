@@ -11,7 +11,7 @@ Command line params:
 | outputDirectory|Output directory, by default will be the directory that was used as input |
 | marginTopBottom |Padding to be added to top and bottom (effective padding can be larger due to aspect ratio) |
 | marginLeftRight |Padding to be added to top and bottom (effective padding can be larger due to aspect ratio) |
-| jpgOnly |Convert all images to JPG before adding them to the pdf (this was needed because there was a weird bug on Sony DPT-RP1 with png images) |
+| jpgOnly |Convert all images to JPG before adding them to the pdf (weird bug on Sony DPT-RP1 with png images) |
 | v | Verbose mode |
 
 The tool also supports table of contents. If in a folder of images a **toc.json** is found it will generate a pdf according to it. 
