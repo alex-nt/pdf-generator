@@ -9,7 +9,8 @@ Command line params:
 | ----- | --- |
 | directory | The directory of images, or a directory of directories of images|
 | outputDirectory|Output directory, by default will be the directory that was used as input |
-| aspectRatio |Preserve image aspect ratio |
+| marginTopBottom |Padding to be added to top and bottom (effective padding can be larger due to aspect ratio) |
+| marginLeftRight |Padding to be added to top and bottom (effective padding can be larger due to aspect ratio) |
 | jpgOnly |Convert all images to JPG before adding them to the pdf (this was needed because there was a weird bug on Sony DPT-RP1 with png images) |
 | v | Verbose mode |
 
