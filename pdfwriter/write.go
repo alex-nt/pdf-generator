@@ -117,10 +117,10 @@ func addImage(pdf *gofpdf.Fpdf, image collector.PdfImage, sections map[string]*s
 	width, height := pdf.GetPageSize()
 
 	imageLayout := computeImageSize(image, width, height, options)
-
+ 
 	logger.Debug.Printf("Image %v", image)
 	// All images will be written as JPG due to weird DPT-RP1 behaviour
-	pdf.RegisterImageOptionsReader(image.Name, gofpdf.ImageOptions{ImageType: "jpg"}, image.Reader())
+	pdf.RegisterImageReader(image.Name, "jpg", image.Reader())
 	pdf.ImageOptions(image.Name, imageLayout.MarginLeft, imageLayout.MarginTop,
 		imageLayout.Width, imageLayout.Height, false, opt, 0, "")
 }
