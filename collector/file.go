@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -41,7 +40,7 @@ func Gather(path string) []PdfStructure {
 }
 
 func readDirectory(path string, pdfStructures *[]PdfStructure) {
-	files, err := ioutil.ReadDir(path)
+	files, err := os.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
 	}

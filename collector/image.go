@@ -19,7 +19,7 @@ type PdfImage struct {
 }
 
 func (pdfImage *PdfImage) Reader() io.Reader {
-	if pdfImage.Type == "jpg" {
+	if pdfImage.Type == "jpg" || pdfImage.Type == "jpeg" {
 		file, err := os.Open(pdfImage.Path)
 		if err != nil {
 			panic(err)
