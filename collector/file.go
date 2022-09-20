@@ -15,6 +15,7 @@ type PdfStructure struct {
 }
 
 var supportedImageTypes = map[string]bool{
+	"jpeg": true,
 	"jpg":  true,
 	"png":  true,
 	"webp": true,
