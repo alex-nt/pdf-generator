@@ -1,6 +1,6 @@
 module github.com/alex-nt/pdf-generator
 
-go 1.18
+go 1.19
 
 require (
 	github.com/jung-kurt/gofpdf/v2 v2.17.3
