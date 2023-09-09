@@ -32,6 +32,9 @@ func (pdfImage *PdfImage) Reader() io.Reader {
 	case "webp":
 		buffer := webpToJPG(pdfImage.Path)
 		return bufio.NewReader(&buffer)
+	case "gif":
+		buffer := gifToJPG(pdfImage.Path)
+		return bufio.NewReader(&buffer)
 	default:
 		panic("Type " + pdfImage.Type + " not supported!")
 	}
