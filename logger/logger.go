@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 )
@@ -10,7 +10,7 @@ var (
 	// Info logger, by deault print to os.Stdout
 	Info = log.New(os.Stdout, "INFO\t", log.LstdFlags)
 	// Debug logger, must be enabled by flag
-	Debug = log.New(ioutil.Discard, "DEBUG\t", log.LstdFlags)
+	Debug = log.New(io.Discard, "DEBUG\t", log.LstdFlags)
 )
 
 // Init is initializing the Debug logger

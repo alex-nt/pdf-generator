@@ -19,22 +19,20 @@ type PdfImage struct {
 }
 
 func (pdfImage *PdfImage) Reader() io.Reader {
-	if pdfImage.Type == "jpg" || pdfImage.Type == "jpeg" {
+	switch pdfImage.Type {
+	case "jpg", "jpeg":
 		file, err := os.Open(pdfImage.Path)
 		if err != nil {
 			panic(err)
 		}
 		return file
-	} else if pdfImage.Type == "png" {
+	case "png":
 		buffer := pngToJPG(pdfImage.Path)
 		return bufio.NewReader(&buffer)
-	} else if pdfImage.Type == "gif" {
-		buffer := gifToJPG(pdfImage.Path)
-		return bufio.NewReader(&buffer)
-	} else if pdfImage.Type == "webp" {
+	case "webp":
 		buffer := webpToJPG(pdfImage.Path)
 		return bufio.NewReader(&buffer)
-	} else {
+	default:
 		panic("Type " + pdfImage.Type + " not supported!")
 	}
 }

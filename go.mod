@@ -4,5 +4,5 @@ go 1.20
 
 require (
 	github.com/jung-kurt/gofpdf/v2 v2.17.3
-	golang.org/x/image v0.11.0
+	golang.org/x/image v0.12.0
 )
