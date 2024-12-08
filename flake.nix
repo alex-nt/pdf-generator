@@ -1,6 +1,6 @@
 {
   description = "A simple Go package";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.11";
 
   outputs =
     { self, nixpkgs }:
@@ -45,7 +45,7 @@
             # remeber to bump this hash when your dependencies change.
             #vendorSha256 = pkgs.lib.fakeSha256;
 
-            vendorHash = "sha256-V9i8/HdARBKKdMtzJ0gkqjzn/9yuvdyXw2xEPQFmreY=";
+            vendorHash = "sha256-p0gV9vgsvYNPEJxX2grN26A0LF6vhmv8wzxguePRPRc=";
           };
         }
       );
