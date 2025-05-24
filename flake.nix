@@ -1,6 +1,6 @@
 {
   description = "A simple Go package";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.11";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-25.05";
 
   outputs =
     { self, nixpkgs }:
